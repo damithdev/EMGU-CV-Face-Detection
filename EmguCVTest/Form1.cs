@@ -3,6 +3,7 @@ using Emgu.CV.Structure;
 using Emgu.CV.UI;
 using Emgu.Util;
 using Emgu.CV.Util;
+using Emgu.CV.CvEnum;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,6 +18,11 @@ namespace EmguCVTest
 {
     public partial class Form1 : Form
     {
+
+        //Parameters
+        private bool FlipImageHorizontal = true;
+
+
         
         private VideoCapture capture = new VideoCapture(0, VideoCapture.API.DShow);
         private ImageViewer viewer = new ImageViewer();
@@ -24,7 +30,9 @@ namespace EmguCVTest
         private Rectangle _myFaceRect;
         private Image<Bgr, Byte> _myFace = null;
         private bool saveToFile = false;
+        private FlipType flipTypeHorizontal = FlipType.None;
 
+       
 
         private Timer timer1;
 
@@ -36,6 +44,11 @@ namespace EmguCVTest
         private void Form1_Load(object sender, EventArgs e)
         {
             cascadeClassifier = new CascadeClassifier(Application.StartupPath + "\\cascades\\haarcascade_frontalface_default.xml");
+
+            if (FlipImageHorizontal)
+            {
+                flipTypeHorizontal = FlipType.Horizontal;
+            }
 
             timer1 = new Timer();
             timer1.Tick += new EventHandler(processSnap);
@@ -57,8 +70,9 @@ namespace EmguCVTest
 
         private void processSnap(object sender, EventArgs e)
         {
-            using (Image<Bgr, Byte> imageFrame = capture.QueryFrame().ToImage<Bgr, Byte>())
+            using (Image<Bgr, Byte> imageFrame = capture.QueryFrame().ToImage<Bgr, Byte>().Flip(flipTypeHorizontal))
             {
+
                 if (imageFrame != null)
                 {
                     var grayFrame = imageFrame.Convert<Gray, byte>();
@@ -102,7 +116,7 @@ namespace EmguCVTest
                                 temp.ROI = Rectangle.Empty;
                                 _myFace = img;
                                 picBox.Image = img.Bitmap;
-                                Bitmap bImage = img.Bitmap;  // Your Bitmap Image
+                                Bitmap bImage = img.Flip(flipTypeHorizontal).Bitmap;  // Your Bitmap Image (The Flipping does not effect this image as it is flipped again to be idential to the original image)
                                 System.IO.MemoryStream ms = new System.IO.MemoryStream();
                                 bImage.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
                                 byte[] byteImage = ms.ToArray();
@@ -119,6 +133,9 @@ namespace EmguCVTest
 
 
                 }
+
+
+
                 imageViewer.Image = imageFrame;
 
             }
