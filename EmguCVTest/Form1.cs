@@ -42,24 +42,11 @@ namespace EmguCVTest
             timer1.Interval = 200; // in miliseconds
             timer1.Start();
 
-            //Application.Idle += new EventHandler(delegate (object send, EventArgs er)
-            //{
-            //    //viewer.Image = capture.QueryFrame();
-            //    //using(Mat mat = capture.QueryFrame())
-            //    //{
-            //    //    if(mat != null)
-            //    //    {
-            //    //        Image<Gray, byte> grayFrame = mat.ToImage<Gray, byte>();
+            Application.Idle += new EventHandler(delegate (object send, EventArgs er)
+            {
+                //call processSnap() here if you want to make the camera preview smooth (Warning : Screaming Fan :D )
+            });
 
-
-            //    //    }
-            //    //}
-
-               
-
-            //});
-
-            //viewer.ShowDialog();
         }
 
         private void btnCaptureClick(object sender, EventArgs e)
@@ -123,11 +110,7 @@ namespace EmguCVTest
 
                                 txtBase64.Text = base64String;
                             }
-
-
-                            //imageFrame.Save( @"C:\faces\" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + ".jpg");
-                            //saveToFile = !saveToFile;
-                            //MessageBox.Show("Captured");
+                            
                         }
 
                         imageFrame.Draw(_myFaceRect, new Bgr(Color.BurlyWood), 3);
@@ -136,16 +119,8 @@ namespace EmguCVTest
 
 
                 }
-                //viewer.Image = imageFrame;
-                //viewer.ShowDialog();
                 imageViewer.Image = imageFrame;
-                //bool show = false;
-                //if (!show)
-                //{
-                //    show = !show;
-                //    this.Visible = false;
-                //    viewer.ShowDialog();
-                //}
+
             }
         }
 
