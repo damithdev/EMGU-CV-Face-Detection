@@ -22,7 +22,7 @@ namespace EmguCVTest
         private ImageViewer viewer = new ImageViewer();
         private CascadeClassifier cascadeClassifier;
         private Rectangle _myFaceRect;
-        private Image<Gray, Byte> _myFace = null;
+        private Image<Bgr, Byte> _myFace = null;
         private bool saveToFile = false;
 
 
@@ -80,7 +80,7 @@ namespace EmguCVTest
                     if (faces.Length > 0)
                     {
                         _myFaceRect = faces[0];
-                        _myFace = grayFrame;
+                        
 
                         int lastHeight = 0;
                         int lastWidth = 0;
@@ -97,23 +97,23 @@ namespace EmguCVTest
                         }
                         if (saveToFile)
                         {
-                            //int label = (int)_myFace[].Intensity;
-                            //var temp = _myFace.
-                            //VectorOfVectorOfPoint contours = new VectorOfVectorOfPoint();
-                            //Mat m = new Mat();
-                            //CvInvoke.FindContours(imageFrame, contours, m, Emgu.CV.CvEnum.RetrType.External, Emgu.CV.CvEnum.ChainApproxMethod.ChainApproxSimple);
+                         
 
                             if (_myFaceRect != null)
                             {
                                 var temp = imageFrame;
                                 saveToFile = !saveToFile;
-                                //Rectangle bbox = CvInvoke.BoundingRectangle(contours[0]);
-                                var cropFaceRect = new Rectangle(_myFaceRect.Location.X - 50, _myFaceRect.Location.Y - 50, _myFaceRect.Width + 100, _myFaceRect.Height + 100);
+                                var verticalOffset = _myFaceRect.Height;
+                                var verticalYOffset = verticalOffset / 2;
+                                var horizontalOffset = _myFaceRect.Width;
+                                var horizontalXOffset = horizontalOffset / 3;
+
+                                var cropFaceRect = new Rectangle(_myFaceRect.Location.X - horizontalXOffset, _myFaceRect.Location.Y - verticalYOffset , _myFaceRect.Width + horizontalOffset , _myFaceRect.Height + verticalOffset);
                                 temp.ROI = cropFaceRect;
 
                                 var img = temp.Copy();
                                 temp.ROI = Rectangle.Empty;
-
+                                _myFace = img;
                                 picBox.Image = img.Bitmap;
                                 Bitmap bImage = img.Bitmap;  // Your Bitmap Image
                                 System.IO.MemoryStream ms = new System.IO.MemoryStream();
@@ -146,6 +146,15 @@ namespace EmguCVTest
                 //    this.Visible = false;
                 //    viewer.ShowDialog();
                 //}
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if(_myFace != null)
+            {
+                _myFace.Save(@"C:\faces\" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + ".jpg");
+                
             }
         }
     }
